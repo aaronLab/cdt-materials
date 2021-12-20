@@ -41,7 +41,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-    true
+    
+    ColorAttributeTransformer.register()
+    
+    let bowtie = NSEntityDescription.insertNewObject(forEntityName: "BowTie",
+                                                     into: persistentContainer.viewContext) as! BowTie
+    bowtie.name = "My bow tie"
+    bowtie.lastWorn = Date()
+    saveContext()
+    
+    let request: NSFetchRequest<BowTie> = BowTie.fetchRequest()
+    if let ties = try? persistentContainer.viewContext.fetch(request),
+       let testName = ties.first?.name,
+       let testLastWorn = ties.first?.lastWorn {
+      NSLog("%@", "Name: \(testName), Worn: \(testLastWorn)")
+    } else {
+      print("Test failed.")
+    }
+    
+    return true
   }
 
   // MARK: UISceneSession Lifecycle
